@@ -2,6 +2,7 @@ import requests
 from flask import Flask, jsonify, request
 import pytesseract
 from PIL import Image
+import os
 
 app = Flask(__name__)
 
@@ -21,14 +22,17 @@ def process_images():
             # Remove line breaks and replace with spaces
             text = text.replace('\n', ' ')
 
+            # Extract the image ID from the URL
+            image_id = os.path.splitext(os.path.basename(image_url))[0]
+
             result = {
-                'url': image_url,
+                'id': image_id,
                 'text': text
             }
             results.append(result)
         except Exception as e:
             error_message = {
-                'url': image_url,
+                'id': image_id,
                 'error': str(e)
             }
             results.append(error_message)
