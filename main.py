@@ -17,6 +17,10 @@ def process_image():
         image = Image.open(response.raw)
         text = pytesseract.image_to_string(image)
 
+        # Remove line breaks and replace with spaces
+        text = text.replace('\n', ' ')
+
+
         result = {
             'id': unique_id,
             'text': text
