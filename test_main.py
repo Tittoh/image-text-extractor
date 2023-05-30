@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch, Mock
 from main import app
 import requests
+from io import BytesIO
 
 
 class FlaskAppTestCase(unittest.TestCase):
@@ -182,6 +183,43 @@ class FlaskAppTestCase(unittest.TestCase):
                 self.assertIn('error', result)
                 self.assertNotIn('text', result)
 
+    def test_process_uploads_success(self):
+        with open('./test_image.jpg', 'rb') as f:
+            response = self.app.post('/process_uploads', data={'image': (f, 'test_image.jpg')})
+        
+        data = response.get_json()
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(data, dict)
+        self.assertIn('text', data)
+
+    def test_process_uploads_no_file(self):
+        response = self.app.post('/process_uploads')
+        data = response.get_json()
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(data, dict)
+        self.assertIn('error', data)
+        self.assertEqual(data['error'], 'No image file found.')
+
+    def test_process_uploads_no_selected_file(self):
+        response = self.app.post('/process_uploads', data={'image': ''})
+        data = response.get_json()
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(data, dict)
+        self.assertIn('error', data)
+        self.assertEqual(data['error'], 'No image file found.')
+
+    def test_process_uploads_invalid_image(self):
+        # Provide an invalid image file (e.g., a text file)
+        data = {'image': (BytesIO(b'This is not an image'), 'test.txt')}
+        response = self.app.post('/process_uploads', data=data, content_type='multipart/form-data')
+        data = response.get_json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(data, dict)
+        self.assertIn('error', data)
 
 if __name__ == '__main__':
     unittest.main()

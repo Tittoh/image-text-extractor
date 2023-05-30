@@ -41,7 +41,9 @@ Flask Image Text Extractor is a RESTful API that extracts text from online image
     ```shell
     python main.py
     ```
-2. Make POST requests to the `/process_images` endpoint with the list of image URLs. For example:
+2. Make POST requests to the `/process_images` endpoint with the list of image URLs or to the `/process_uploads` endpoint with an uploaded image. For example:
+
+- Process images from URLs:
     ```http
     POST /process_images HTTP/1.1
     Content-Type: application/json
@@ -54,6 +56,13 @@ Flask Image Text Extractor is a RESTful API that extracts text from online image
       ]
     }
     ```
+- Process uploaded image:
+    ```http
+    POST /process_uploads HTTP/1.1
+    Content-Type: multipart/form-data
+
+    # Include the uploaded image file
+    ```
 3. The API will process the images, extract the text using OCR, and return a response with the extracted text for each image.
 
 ## API Endpoints
@@ -61,7 +70,7 @@ Flask Image Text Extractor is a RESTful API that extracts text from online image
 
 Extracts text from online images.
 
-Request Body
+Request Body:
 ```json
 {
   "image_urls": [
@@ -73,7 +82,7 @@ Request Body
 ```
 - `image_urls` (required): A list of image URLs to process. Maximum of 8 URLs allowed.
 
-Response
+Response:
 ```json
 [
   {
@@ -94,6 +103,27 @@ Response
 - `text`: The extracted text from the image.
 - `error`: If an error occurs during image processing, an error message will be present instead of the `text` field.
 
+### `POST /process_uploads`
+
+Extracts text from an uploaded image.
+
+Request Body:
+```http
+POST /process_uploads HTTP/1.1
+Content-Type: multipart/form-data
+
+# Include the uploaded image file
+```
+- `image` (required): The uploaded image file.
+
+Response:
+```json
+{
+  "text": "Text extracted from the uploaded image"
+}
+```
+- `text`: The extracted text from the uploaded image.
+
 ## Testing
 Run tests
 ```shell
@@ -106,7 +136,7 @@ Contributions are welcome! If you have any suggestions, bug reports, or feature 
 
 ## License
 
-This project is licensed under the `MIT License`
+This project is licensed under the **[MIT License](LICENSE)**
 
 *Feel free to customize and expand the README file to fit the specific details and requirements of your Flask Image Text Extractor app.*
 
