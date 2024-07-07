@@ -13,7 +13,7 @@ packaging==23.1
 Pillow==10.3.0
 pytesseract==0.3.10
 pytz==2023.3
-requests==2.31.0
+requests==2.32.2
 six==1.16.0
 urllib3==2.2.2
 Werkzeug==3.0.3
